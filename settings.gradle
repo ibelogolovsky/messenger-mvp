@@ -1,0 +1,3 @@
+rootProject.name = 'messenger-mvp'
+
+include 'common', 'server', 'client'

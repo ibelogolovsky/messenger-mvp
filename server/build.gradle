@@ -1,0 +1,10 @@
+apply plugin: 'application'
+
+application {
+    mainClass = 'com.example.messenger.server.ServerApplication'
+}
+
+dependencies {
+    implementation project(':common')
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+}
