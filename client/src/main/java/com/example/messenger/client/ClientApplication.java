@@ -82,6 +82,7 @@ public class ClientApplication implements ServerEventListener {
         loginPanel.setStatus(" ");
         openMainWindow();
         requestUsers();
+        startUsersRefreshLoop();
     }
 
     @Override
@@ -189,6 +190,22 @@ public class ClientApplication implements ServerEventListener {
         } catch (IOException e) {
             onDisconnected("Failed to send message");
         }
+    }
+
+    private void startUsersRefreshLoop() {
+        Thread refreshThread = new Thread(() -> {
+            while (store.getConnectionState() == ConnectionState.CONNECTED) {
+                try {
+                    Thread.sleep(2000);
+                    requestUsers();
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }, "users-refresh");
+        refreshThread.setDaemon(true);
+        refreshThread.start();
     }
 
     private String requestId() {
