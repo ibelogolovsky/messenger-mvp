@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainPanel extends JPanel {
@@ -33,6 +34,7 @@ public class MainPanel extends JPanel {
     private final JLabel statusLabel = new JLabel("Select a chat to start messaging");
     private final JTextArea inputArea = new JTextArea(3, 20);
     private final JButton sendButton = new JButton("Send");
+    private final List<UserInfo> renderedUsers = new ArrayList<>();
 
     public MainPanel() {
         setLayout(new BorderLayout());
@@ -109,6 +111,28 @@ public class MainPanel extends JPanel {
     }
 
     public void setUsers(List<UserInfo> users, String selectedUsername) {
+        boolean sameSize = renderedUsers.size() == users.size();
+        boolean sameContent = sameSize;
+        if (sameSize) {
+            for (int i = 0; i < users.size(); i++) {
+                UserInfo oldUser = renderedUsers.get(i);
+                UserInfo newUser = users.get(i);
+                if (!oldUser.username().equals(newUser.username())
+                        || !oldUser.displayName().equals(newUser.displayName())
+                        || oldUser.online() != newUser.online()) {
+                    sameContent = false;
+                    break;
+                }
+            }
+        }
+
+        if (sameContent) {
+            return;
+        }
+
+        renderedUsers.clear();
+        renderedUsers.addAll(users);
+
         usersModel.clear();
         int selectedIndex = -1;
         for (int i = 0; i < users.size(); i++) {
@@ -118,7 +142,7 @@ public class MainPanel extends JPanel {
                 selectedIndex = i;
             }
         }
-        if (selectedIndex >= 0) {
+        if (selectedIndex >= 0 && usersList.getSelectedIndex() != selectedIndex) {
             usersList.setSelectedIndex(selectedIndex);
         }
     }
