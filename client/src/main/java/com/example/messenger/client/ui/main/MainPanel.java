@@ -105,9 +105,21 @@ public class MainPanel extends JPanel {
     }
 
     public void setUsers(List<UserInfo> users) {
+        setUsers(users, getSelectedUser() == null ? null : getSelectedUser().username());
+    }
+
+    public void setUsers(List<UserInfo> users, String selectedUsername) {
         usersModel.clear();
-        for (UserInfo user : users) {
+        int selectedIndex = -1;
+        for (int i = 0; i < users.size(); i++) {
+            UserInfo user = users.get(i);
             usersModel.addElement(user);
+            if (selectedUsername != null && selectedUsername.equals(user.username())) {
+                selectedIndex = i;
+            }
+        }
+        if (selectedIndex >= 0) {
+            usersList.setSelectedIndex(selectedIndex);
         }
     }
 

@@ -88,8 +88,16 @@ public class ClientApplication implements ServerEventListener {
     @Override
     public void onUsersList(UsersListResponse response) {
         store.setUsers(response.users());
-        mainPanel.setUsers(response.users());
-        mainPanel.setStatusText("Connected");
+        String selectedUsername = store.getSelectedUsername();
+        mainPanel.setUsers(response.users(), selectedUsername);
+        if (selectedUsername != null) {
+            response.users().stream()
+                    .filter(user -> user.username().equals(selectedUsername))
+                    .findFirst()
+                    .ifPresent(mainPanel::setSelectedUser);
+        } else {
+            mainPanel.setStatusText("Connected");
+        }
     }
 
     @Override
